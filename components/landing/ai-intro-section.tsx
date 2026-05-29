@@ -1,15 +1,31 @@
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+
 import { aiSteps, searchIntentItems } from "@/components/landing/content";
 import { SectionHeading } from "@/components/landing/section-heading";
+import { Button } from "@/components/ui/button";
 
 export function AiIntroSection() {
   return (
-    <section className="border-b bg-background py-16 sm:py-20">
+    <section
+      id="ai-species-intro"
+      className="border-b bg-background py-16 sm:py-20"
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="AI 어종 판별"
-          title="사진 1장으로 어종 후보를 빠르게 확인합니다."
-          description="웹에서는 로그인 없이 판별을 시작하고, 앱에서는 확인한 결과를 조과 기록 흐름으로 이어갈 수 있습니다."
-        />
+          title="어종 분석은 전용 페이지에서 진행합니다."
+          description="소개 페이지에는 업로드 UI를 두지 않습니다. 사진을 올리고 후보 결과를 확인하는 흐름은 AI 어종 판별 페이지에서만 제공합니다."
+        >
+          <div className="mt-6">
+            <Button asChild>
+              <Link href="/ai-species">
+                AI 어종 판별하기
+                <ChevronRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
+        </SectionHeading>
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {aiSteps.map((step, index) => (

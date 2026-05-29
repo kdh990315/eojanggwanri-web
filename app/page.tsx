@@ -6,7 +6,6 @@ import { FeaturesSection } from "@/components/landing/features-section";
 import { FinalCtaSection } from "@/components/landing/final-cta-section";
 import { FishLinksSection } from "@/components/landing/fish-links-section";
 import { HeroSection } from "@/components/landing/hero-section";
-import { MobileStickyCta } from "@/components/landing/mobile-sticky-cta";
 import { seoStructuredData } from "@/components/landing/content";
 import { SiteFooter } from "@/components/landing/site-footer";
 import { SiteHeader } from "@/components/landing/site-header";
@@ -17,16 +16,15 @@ export default function Home() {
       <SiteHeader />
       <main>
         <HeroSection />
-        <AiIntroSection />
         <CatchRecordSection />
         <FeaturesSection />
-        <DownloadSection />
+        <AiIntroSection />
         <FishLinksSection />
         <FaqPreviewSection />
+        <DownloadSection />
         <FinalCtaSection />
       </main>
       <SiteFooter />
-      <MobileStickyCta />
       <script
         type="application/ld+json"
         suppressHydrationWarning

@@ -1,11 +1,11 @@
 import {
   BookOpen,
   Camera,
-  ClipboardCheck,
   CloudSun,
   Fish,
   ListChecks,
   MapPin,
+  PlayCircle,
   Search,
   Sparkles,
   Upload,
@@ -15,28 +15,27 @@ export const contactFormUrl =
   "https://docs.google.com/forms/d/e/1FAIpQLSexQf4Mtne8w5iEjDjW-06VGYFV1cdGLUDX8Q_8gT6kLvRCfQ/viewform?usp=dialog";
 
 export const navigationItems = [
-  { label: "AI 어종판별", href: "/ai-species" },
   { label: "조과 기록", href: "#catch-record" },
   { label: "앱 소개", href: "#features" },
-  { label: "앱 다운로드", href: "#download" },
+  { label: "AI 어종판별", href: "#ai-species-intro" },
   { label: "FAQ", href: "#faq" },
 ];
 
 export const aiSteps = [
   {
     icon: Upload,
-    title: "사진 업로드",
-    description: "물고기가 잘 보이는 사진 1장을 선택합니다.",
+    title: "전용 페이지에서 사진 업로드",
+    description: "소개 페이지가 아니라 AI 어종 판별 페이지에서 사진을 선택합니다.",
+  },
+  {
+    icon: PlayCircle,
+    title: "짧은 광고 후 판별",
+    description: "영상 광고가 끝나거나 skip하면 AI 판별을 시작합니다.",
   },
   {
     icon: Sparkles,
     title: "AI 후보 확인",
-    description: "AI가 어종 후보를 제안하고 참고 정보를 보여줍니다.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "기록으로 연결",
-    description: "앱에서는 확인한 결과를 조과 기록 초안으로 이어갈 수 있습니다.",
+    description: "결과는 확정값이 아니라 직접 확인해야 할 후보입니다.",
   },
 ];
 
@@ -99,9 +98,9 @@ export const faqPreview = [
 ];
 
 export const recordPoints = [
-  "물고기 이름만 찾고 끝내지 않고 날짜, 위치, 사진을 함께 남깁니다.",
-  "물때와 날씨를 같이 기록해 다음 출조를 돌아볼 수 있습니다.",
-  "쌓인 기록은 이후 어종별, 위치별 통계로 확장할 수 있는 기반이 됩니다.",
+  "잡은 물고기 사진과 이름, 날짜, 위치를 한 기록 안에 남깁니다.",
+  "물때와 날씨를 같이 정리해 다음 출조를 돌아볼 수 있습니다.",
+  "쌓인 기록은 이후 어종별, 위치별 흐름을 살펴볼 수 있는 기반이 됩니다.",
 ];
 
 export const seoStructuredData = {
@@ -124,17 +123,17 @@ export const seoStructuredData = {
 export const searchIntentItems = [
   {
     icon: Search,
-    title: "검색해서 들어온 순간",
-    description: "처음 보는 물고기 사진을 들고 바로 판별 페이지로 이동합니다.",
+    title: "메인 페이지는 소개만",
+    description: "업로드 UI 없이 어장관리 앱의 기록 가치를 먼저 보여줍니다.",
   },
   {
     icon: Fish,
-    title: "후보를 참고로 확인",
-    description: "AI 결과는 확정이 아니라 사용자가 확인해야 할 후보입니다.",
+    title: "분석은 별도 페이지에서",
+    description: "`AI 어종 판별하기` 버튼을 눌러 전용 페이지로 이동합니다.",
   },
   {
     icon: BookOpen,
-    title: "내 기록으로 축적",
-    description: "확인한 조과를 앱에서 낚시 노트처럼 정리합니다.",
+    title: "결과 뒤 앱 가치 소개",
+    description: "판별 결과 화면에서 조과 기록 앱의 가치를 다시 안내합니다.",
   },
 ];

@@ -59,7 +59,7 @@ export function SiteHeader() {
               <SheetHeader>
                 <SheetTitle>어장관리</SheetTitle>
                 <SheetDescription>
-                  AI 어종 판별과 조과 기록을 빠르게 확인하세요.
+                  조과 기록 앱 소개와 AI 어종 판별 진입을 확인하세요.
                 </SheetDescription>
               </SheetHeader>
               <nav className="mt-8 flex flex-col gap-2">
