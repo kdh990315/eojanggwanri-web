@@ -1,0 +1,28 @@
+# Added by code-review-graph
+.code-review-graph/
+
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# production
+build/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo
+
+# local verification artifacts
+.playwright-mcp/
+landing-*.png
+.tools/
+
+# env
+.env*
+!.env.example
