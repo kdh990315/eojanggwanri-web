@@ -52,6 +52,8 @@ mutedText: #6b7684
 border: #e5e8eb
 primary: #191f28
 primaryForeground: #ffffff
+mainColor: #8FC9E8
+subColor: #A9C9DC
 accent: #3182f6
 accentSoft: #eef6ff
 danger: #d92d20
