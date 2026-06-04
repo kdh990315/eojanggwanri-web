@@ -19,10 +19,24 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-main-color: var(--main-color);
+  --color-main-color-100: var(--main-color-100);
+  --color-main-color-200: var(--main-color-200);
+  --color-main-color-300: var(--main-color-300);
+  --color-main-color-400: var(--main-color-400);
+  --color-main-color-500: var(--main-color-500);
+  --color-main-color-600: var(--main-color-600);
+  --color-sub-color: var(--sub-color);
+  --color-sub-color-100: var(--sub-color-100);
+  --color-sub-color-200: var(--sub-color-200);
+  --color-sub-color-300: var(--sub-color-300);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-sans:
+    Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Arial, Helvetica,
+    sans-serif;
 }
 
 :root {
@@ -33,6 +47,17 @@
   --card-foreground: #191f28;
   --popover: #ffffff;
   --popover-foreground: #191f28;
+  --main-color-100: #0f6396;
+  --main-color-200: #1d78ae;
+  --main-color-300: #2f8fc5;
+  --main-color-400: #8fc9e8;
+  --main-color-500: #ddeff8;
+  --main-color-600: #f7fbfd;
+  --sub-color-100: #2f7fd2;
+  --sub-color-200: #a9c9dc;
+  --sub-color-300: #ff8b6a;
+  --main-color: var(--main-color-300);
+  --sub-color: var(--sub-color-200);
   --primary: #191f28;
   --primary-foreground: #ffffff;
   --secondary: #f9fafb;
@@ -58,16 +83,17 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family:
-    Pretendard,
-    "Apple SD Gothic Neo",
-    "Noto Sans KR",
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 ::selection {
