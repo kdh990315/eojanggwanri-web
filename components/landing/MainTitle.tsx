@@ -11,7 +11,7 @@ export function MainTitle({ children, className }: MainTitleProps) {
   return (
     <h2
       className={cn(
-        "mt-5 text-4xl font-black leading-tight md:text-5xl",
+        "mt-4 text-3xl font-black leading-tight sm:text-4xl md:mt-5 md:text-5xl",
         className,
       )}
     >

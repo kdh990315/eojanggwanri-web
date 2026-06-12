@@ -9,7 +9,12 @@ type SubTitleProps = {
 
 export function SubTitle({ children, className }: SubTitleProps) {
   return (
-    <p className={cn("mt-6 text-lg leading-8 text-slate-600", className)}>
+    <p
+      className={cn(
+        "mx-auto mt-5 max-w-xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8 lg:mx-0",
+        className,
+      )}
+    >
       {children}
     </p>
   );
