@@ -10,7 +10,7 @@ const navItems = [
   { href: "/#features", label: "앱 기능" },
 ];
 
-export function SiteHeader() {
+export const SiteHeader = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
@@ -63,4 +63,4 @@ export function SiteHeader() {
       </div>
     </header>
   );
-}
+};

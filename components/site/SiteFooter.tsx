@@ -1,4 +1,4 @@
-export function SiteFooter() {
+export const SiteFooter = () => {
   return (
     <footer className="bg-[#111827] px-5 py-8 text-white/60">
       <div className="mx-auto flex max-w-6xl flex-col justify-between gap-4 text-sm md:flex-row">
@@ -7,4 +7,4 @@ export function SiteFooter() {
       </div>
     </footer>
   );
-}
+};
