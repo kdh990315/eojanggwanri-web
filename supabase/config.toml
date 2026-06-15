@@ -1,0 +1,8 @@
+[functions.detect-fish-species]
+verify_jwt = true
+
+[functions.detect-fish-species-web]
+verify_jwt = false
+
+[functions.create-photo-catch-draft]
+verify_jwt = true
