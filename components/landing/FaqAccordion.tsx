@@ -8,7 +8,7 @@ type FaqItem = {
   answer: string;
 };
 
-export function FaqAccordion({ items }: { items: FaqItem[] }) {
+export const FaqAccordion = ({ items }: { items: FaqItem[] }) => {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
@@ -45,4 +45,4 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
       })}
     </div>
   );
-}
+};

@@ -3,7 +3,7 @@ import { ProductScreen } from "@/components/landing/ProductScreen";
 import { SectionLabel } from "@/components/landing/SectionLabel";
 import { SubTitle } from "@/components/landing/SubTitle";
 
-export function CatchDashboardSection() {
+export const CatchDashboardSection = () => {
   return (
     <section
       id="features"
@@ -33,4 +33,4 @@ export function CatchDashboardSection() {
       </div>
     </section>
   );
-}
+};

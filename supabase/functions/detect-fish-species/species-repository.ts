@@ -6,20 +6,20 @@ import type {
   WaterType,
 } from "./types.ts";
 
-export async function getSpeciesData(
+export const getSpeciesData = async (
   supabase: SupabaseClient,
   waterType: WaterType | null,
-) {
+) => {
   return await Promise.all([
     getSpeciesList(supabase, waterType),
     getReferenceList(supabase, waterType),
   ]);
-}
+};
 
-async function getSpeciesList(
+const getSpeciesList = async (
   supabase: SupabaseClient,
   waterType: WaterType | null,
-) {
+) => {
   let query = supabase
     .from("fish_species")
     .select("id, location_type, name")
@@ -37,12 +37,12 @@ async function getSpeciesList(
   }
 
   return data;
-}
+};
 
-async function getReferenceList(
+const getReferenceList = async (
   supabase: SupabaseClient,
   waterType: WaterType | null,
-) {
+) => {
   let query = supabase
     .from("ai_species_references")
     .select("location_type, name, identification_notes")
@@ -61,4 +61,4 @@ async function getReferenceList(
   }
 
   return data ?? [];
-}
+};

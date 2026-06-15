@@ -355,13 +355,13 @@ Deno.serve(async (req) => {
   }
 });
 
-async function enrichLocationFromKakao({
+const enrichLocationFromKakao = async ({
   latitude,
   longitude,
 }: {
   latitude: number | null;
   longitude: number | null;
-}): Promise<KakaoLocationDraft> {
+}): Promise<KakaoLocationDraft> => {
   const emptyLocation = {
     address: null,
     pointName: null,
@@ -418,12 +418,12 @@ async function enrichLocationFromKakao({
     regionName,
     source: "kakao_local",
   };
-}
+};
 
-async function enrichWeatherFromStoredForecasts(
+const enrichWeatherFromStoredForecasts = async (
   supabase: ReturnType<typeof createClient>,
   request: CreatePhotoCatchDraftRequest,
-): Promise<WeatherDraft> {
+): Promise<WeatherDraft> => {
   const emptyDraft = createEmptyWeatherDraft();
 
   if (request.latitude === null || request.longitude === null) {
@@ -465,9 +465,9 @@ async function enrichWeatherFromStoredForecasts(
     windDirectionDeg: forecast.wind_direction_deg,
     windSpeedMs: forecast.wind_speed_ms,
   };
-}
+};
 
-async function enrichFishingIndexFromStoredForecasts({
+const enrichFishingIndexFromStoredForecasts = async ({
   capturedAt,
   latitude,
   longitude,
@@ -479,7 +479,7 @@ async function enrichFishingIndexFromStoredForecasts({
   longitude: number | null;
   speciesCandidates: SpeciesCandidate[];
   supabase: ReturnType<typeof createClient>;
-}): Promise<FishingIndexDraft> {
+}): Promise<FishingIndexDraft> => {
   const emptyDraft = createEmptyFishingIndexDraft();
 
   if (latitude === null || longitude === null) {
@@ -557,9 +557,9 @@ async function enrichFishingIndexFromStoredForecasts({
       forecast.wind_speed_max_ms,
     ),
   };
-}
+};
 
-async function detectSpeciesFromStoredImage({
+const detectSpeciesFromStoredImage = async ({
   authorization,
   imagePath,
   waterType,
@@ -567,7 +567,7 @@ async function detectSpeciesFromStoredImage({
   authorization: string;
   imagePath: string;
   waterType: WaterType;
-}): Promise<SpeciesDraft> {
+}): Promise<SpeciesDraft> => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
@@ -612,9 +612,9 @@ async function detectSpeciesFromStoredImage({
   } finally {
     clearTimeout(timeoutId);
   }
-}
+};
 
-async function findNearestWeatherForecastMatch({
+const findNearestWeatherForecastMatch = async ({
   latitude,
   longitude,
   supabase,
@@ -624,7 +624,7 @@ async function findNearestWeatherForecastMatch({
   longitude: number;
   supabase: ReturnType<typeof createClient>;
   targetDateTime: ReturnType<typeof getSeoulDateTime>;
-}): Promise<WeatherForecastMatch> {
+}): Promise<WeatherForecastMatch> => {
   let fallbackWeatherLocation: WeatherLocationRow | null = null;
   const checkedGridKeys = new Set<string>();
 
@@ -690,9 +690,9 @@ async function findNearestWeatherForecastMatch({
     forecast: null,
     weatherLocation: fallbackWeatherLocation,
   };
-}
+};
 
-async function getWeatherForecastRowsForLocations({
+const getWeatherForecastRowsForLocations = async ({
   supabase,
   targetDateTime,
   weatherLocations,
@@ -700,7 +700,7 @@ async function getWeatherForecastRowsForLocations({
   supabase: ReturnType<typeof createClient>;
   targetDateTime: ReturnType<typeof getSeoulDateTime>;
   weatherLocations: WeatherLocationRow[];
-}) {
+}) => {
   const gridFilters = weatherLocations
     .map((weatherLocation) => {
       return `and(kma_nx.eq.${weatherLocation.kma_nx},kma_ny.eq.${weatherLocation.kma_ny})`;
@@ -729,9 +729,9 @@ async function getWeatherForecastRowsForLocations({
   }
 
   return data ?? [];
-}
+};
 
-function groupWeatherForecastRowsByGrid(rows: WeatherForecastRow[]) {
+const groupWeatherForecastRowsByGrid = (rows: WeatherForecastRow[]) => {
   const rowsByGrid = new Map<string, WeatherForecastRow[]>();
 
   for (const row of rows) {
@@ -742,12 +742,12 @@ function groupWeatherForecastRowsByGrid(rows: WeatherForecastRow[]) {
   }
 
   return rowsByGrid;
-}
+};
 
-function getUncheckedWeatherGridCandidates(
+const getUncheckedWeatherGridCandidates = (
   sortedLocations: WeatherLocationRow[],
   checkedGridKeys: Set<string>,
-) {
+) => {
   const candidates: WeatherLocationRow[] = [];
   const candidateGridKeys = new Set(checkedGridKeys);
 
@@ -767,13 +767,13 @@ function getUncheckedWeatherGridCandidates(
   }
 
   return candidates;
-}
+};
 
-function getWeatherGridKey(grid: { kma_nx: number; kma_ny: number }) {
+const getWeatherGridKey = (grid: { kma_nx: number; kma_ny: number }) => {
   return `${grid.kma_nx}:${grid.kma_ny}`;
-}
+};
 
-async function findNearestFishingLocation({
+const findNearestFishingLocation = async ({
   latitude,
   longitude,
   supabase,
@@ -781,7 +781,7 @@ async function findNearestFishingLocation({
   latitude: number;
   longitude: number;
   supabase: ReturnType<typeof createClient>;
-}) {
+}) => {
   for (const delta of [0.25, 0.75, 1.5]) {
     const { data, error } = await supabase
       .from("fishing_locations")
@@ -807,11 +807,11 @@ async function findNearestFishingLocation({
   }
 
   return null;
-}
+};
 
-function findNearestByDistance<
+const findNearestByDistance = <
   Row extends { latitude: number; longitude: number },
->(rows: Row[], latitude: number, longitude: number) {
+>(rows: Row[], latitude: number, longitude: number) => {
   let nearest: Row | null = null;
   let nearestDistanceKm = Number.POSITIVE_INFINITY;
 
@@ -830,13 +830,13 @@ function findNearestByDistance<
   }
 
   return nearest;
-}
+};
 
-function sortByDistance<Row extends { latitude: number; longitude: number }>(
+const sortByDistance = <Row extends { latitude: number; longitude: number }>(
   rows: Row[],
   latitude: number,
   longitude: number,
-) {
+) => {
   return [...rows].sort((left, right) => {
     const leftDistanceKm = haversineDistanceKm({
       fromLatitude: latitude,
@@ -853,12 +853,12 @@ function sortByDistance<Row extends { latitude: number; longitude: number }>(
 
     return leftDistanceKm - rightDistanceKm;
   });
-}
+};
 
-function findNearestForecastSlot<Row extends { forecast_date: string; forecast_time: string }>(
+const findNearestForecastSlot = <Row extends { forecast_date: string; forecast_time: string }>(
   rows: Row[],
   targetTimestampMs: number,
-) {
+) => {
   let nearest: Row | null = null;
   let nearestDiffMs = Number.POSITIVE_INFINITY;
 
@@ -873,9 +873,9 @@ function findNearestForecastSlot<Row extends { forecast_date: string; forecast_t
   }
 
   return nearest;
-}
+};
 
-function findBestFishingIndexForecast({
+const findBestFishingIndexForecast = ({
   forecasts,
   speciesCandidates,
   targetTimestampMs,
@@ -883,7 +883,7 @@ function findBestFishingIndexForecast({
   forecasts: FishingIndexForecastRow[];
   speciesCandidates: SpeciesCandidate[];
   targetTimestampMs: number;
-}) {
+}) => {
   const preferredSpeciesNames = new Set(
     speciesCandidates
       .filter((candidate) => candidate.confidence >= 0.2)
@@ -909,15 +909,15 @@ function findBestFishingIndexForecast({
   }
 
   return bestForecast;
-}
+};
 
-function getFishingIndexSpeciesScore({
+const getFishingIndexSpeciesScore = ({
   preferredSpeciesNames,
   targetSpeciesName,
 }: {
   preferredSpeciesNames: Set<string>;
   targetSpeciesName: string;
-}) {
+}) => {
   const normalizedTargetSpeciesName = normalizeComparableText(targetSpeciesName);
 
   if (
@@ -935,9 +935,9 @@ function getFishingIndexSpeciesScore({
   }
 
   return preferredSpeciesNames.size > 0 ? 2 : 0;
-}
+};
 
-function getSeoulDateTime(value: string | null) {
+const getSeoulDateTime = (value: string | null) => {
   const date = value ? new Date(value) : new Date();
   const safeDate = Number.isFinite(date.getTime()) ? date : new Date();
   const formatter = new Intl.DateTimeFormat("en-CA", {
@@ -961,26 +961,26 @@ function getSeoulDateTime(value: string | null) {
     time: timeText,
     timestampMs: safeDate.getTime(),
   };
-}
+};
 
-function getForecastTimestampMs({
+const getForecastTimestampMs = ({
   forecast_date,
   forecast_time,
 }: {
   forecast_date: string;
   forecast_time: string;
-}) {
+}) => {
   return new Date(`${forecast_date}T${forecast_time}+09:00`).getTime();
-}
+};
 
-function addDays(dateText: string, dayOffset: number) {
+const addDays = (dateText: string, dayOffset: number) => {
   const [year, month, day] = dateText.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day + dayOffset));
 
   return date.toISOString().slice(0, 10);
-}
+};
 
-function haversineDistanceKm({
+const haversineDistanceKm = ({
   fromLatitude,
   fromLongitude,
   toLatitude,
@@ -990,7 +990,7 @@ function haversineDistanceKm({
   fromLongitude: number;
   toLatitude: number;
   toLongitude: number;
-}) {
+}) => {
   const latitudeDelta = toRadians(toLatitude - fromLatitude);
   const longitudeDelta = toRadians(toLongitude - fromLongitude);
   const fromLatitudeRadians = toRadians(fromLatitude);
@@ -1003,21 +1003,21 @@ function haversineDistanceKm({
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return EARTH_RADIUS_KM * c;
-}
+};
 
-function toRadians(value: number) {
+const toRadians = (value: number) => {
   return (value * Math.PI) / 180;
-}
+};
 
-function averageNullable(first: number | null, second: number | null) {
+const averageNullable = (first: number | null, second: number | null) => {
   if (first !== null && second !== null) {
     return Number(((first + second) / 2).toFixed(2));
   }
 
   return first ?? second;
-}
+};
 
-function normalizeSpeciesCandidates(value: unknown): SpeciesCandidate[] {
+const normalizeSpeciesCandidates = (value: unknown): SpeciesCandidate[] => {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -1048,19 +1048,19 @@ function normalizeSpeciesCandidates(value: unknown): SpeciesCandidate[] {
       },
     ];
   });
-}
+};
 
-function normalizePositiveInteger(value: unknown) {
+const normalizePositiveInteger = (value: unknown) => {
   return typeof value === "number" && Number.isInteger(value) && value > 0
     ? value
     : null;
-}
+};
 
-function normalizeComparableText(value: string) {
+const normalizeComparableText = (value: string) => {
   return value.trim().replace(/\s+/g, "").toLowerCase();
-}
+};
 
-function createEmptyWeatherDraft(): WeatherDraft {
+const createEmptyWeatherDraft = (): WeatherDraft => {
   return {
     airTempC: null,
     humidityPercent: null,
@@ -1073,9 +1073,9 @@ function createEmptyWeatherDraft(): WeatherDraft {
     windDirectionDeg: null,
     windSpeedMs: null,
   };
-}
+};
 
-function createEmptyFishingIndexDraft(): FishingIndexDraft {
+const createEmptyFishingIndexDraft = (): FishingIndexDraft => {
   return {
     airTempC: null,
     currentSpeedKn: null,
@@ -1089,30 +1089,30 @@ function createEmptyFishingIndexDraft(): FishingIndexDraft {
     waveHeightM: null,
     windSpeedMs: null,
   };
-}
+};
 
-function createEmptySpeciesDraft(): SpeciesDraft {
+const createEmptySpeciesDraft = (): SpeciesDraft => {
   return {
     predictionId: null,
     source: "none",
     speciesCandidates: [],
   };
-}
+};
 
-function getSettledValue<T>(
+const getSettledValue = <T>(
   result: PromiseSettledResult<T>,
   fallback: T,
   warningMessage: string,
-) {
+) => {
   if (result.status === "fulfilled") {
     return result.value;
   }
 
   console.warn(warningMessage, normalizeErrorForLog(result.reason));
   return fallback;
-}
+};
 
-async function fetchKakaoCoord2Address({
+const fetchKakaoCoord2Address = async ({
   kakaoRestApiKey,
   latitude,
   longitude,
@@ -1120,7 +1120,7 @@ async function fetchKakaoCoord2Address({
   kakaoRestApiKey: string;
   latitude: number;
   longitude: number;
-}) {
+}) => {
   const url = buildKakaoGeoUrl("coord2address", latitude, longitude);
   const response = await fetch(url, {
     headers: {
@@ -1133,9 +1133,9 @@ async function fetchKakaoCoord2Address({
   }
 
   return (await response.json()) as KakaoCoord2AddressResponse;
-}
+};
 
-async function fetchKakaoCoord2RegionCode({
+const fetchKakaoCoord2RegionCode = async ({
   kakaoRestApiKey,
   latitude,
   longitude,
@@ -1143,7 +1143,7 @@ async function fetchKakaoCoord2RegionCode({
   kakaoRestApiKey: string;
   latitude: number;
   longitude: number;
-}) {
+}) => {
   const url = buildKakaoGeoUrl("coord2regioncode", latitude, longitude);
   const response = await fetch(url, {
     headers: {
@@ -1156,22 +1156,22 @@ async function fetchKakaoCoord2RegionCode({
   }
 
   return (await response.json()) as KakaoCoord2RegionCodeResponse;
-}
+};
 
-function buildKakaoGeoUrl(
+const buildKakaoGeoUrl = (
   endpoint: "coord2address" | "coord2regioncode",
   latitude: number,
   longitude: number,
-) {
+) => {
   const url = new URL(`${KAKAO_LOCAL_BASE_URL}/geo/${endpoint}.json`);
   url.searchParams.set("x", String(longitude));
   url.searchParams.set("y", String(latitude));
   url.searchParams.set("input_coord", "WGS84");
 
   return url;
-}
+};
 
-function getBestKakaoAddress(payload: KakaoCoord2AddressResponse | null) {
+const getBestKakaoAddress = (payload: KakaoCoord2AddressResponse | null) => {
   const document = payload?.documents?.[0];
   const roadAddress = normalizeNullableString(
     document?.road_address?.address_name,
@@ -1179,9 +1179,9 @@ function getBestKakaoAddress(payload: KakaoCoord2AddressResponse | null) {
   const jibunAddress = normalizeNullableString(document?.address?.address_name);
 
   return roadAddress ?? jibunAddress;
-}
+};
 
-function getBestKakaoRegionName(payload: KakaoCoord2RegionCodeResponse | null) {
+const getBestKakaoRegionName = (payload: KakaoCoord2RegionCodeResponse | null) => {
   const documents = payload?.documents ?? [];
   const administrativeRegion =
     documents.find((document) => document.region_type === "H") ?? null;
@@ -1190,9 +1190,9 @@ function getBestKakaoRegionName(payload: KakaoCoord2RegionCodeResponse | null) {
   const selectedRegion = administrativeRegion ?? legalRegion ?? documents[0];
 
   return normalizeNullableString(selectedRegion?.address_name);
-}
+};
 
-async function readJson(req: Request) {
+const readJson = async (req: Request) => {
   try {
     return (await req.json()) as unknown;
   } catch {
@@ -1202,11 +1202,11 @@ async function readJson(req: Request) {
       status: 400,
     });
   }
-}
+};
 
-function parseCreatePhotoCatchDraftRequest(
+const parseCreatePhotoCatchDraftRequest = (
   body: unknown,
-): CreatePhotoCatchDraftRequest {
+): CreatePhotoCatchDraftRequest => {
   if (!body || typeof body !== "object") {
     throw new PublicHttpError({
       code: "INVALID_REQUEST",
@@ -1233,9 +1233,9 @@ function parseCreatePhotoCatchDraftRequest(
     longitude,
     waterType,
   };
-}
+};
 
-function normalizeRequiredString(value: unknown, fieldName: string) {
+const normalizeRequiredString = (value: unknown, fieldName: string) => {
   if (typeof value !== "string") {
     throw new PublicHttpError({
       code: "INVALID_REQUEST",
@@ -1255,9 +1255,9 @@ function normalizeRequiredString(value: unknown, fieldName: string) {
   }
 
   return trimmed;
-}
+};
 
-function normalizeWaterType(value: unknown): WaterType {
+const normalizeWaterType = (value: unknown): WaterType => {
   if (value === "saltwater" || value === "freshwater") {
     return value;
   }
@@ -1267,9 +1267,9 @@ function normalizeWaterType(value: unknown): WaterType {
     message: "waterType 값이 올바르지 않습니다.",
     status: 400,
   });
-}
+};
 
-function normalizeCapturedAtSource(value: unknown): CapturedAtSource {
+const normalizeCapturedAtSource = (value: unknown): CapturedAtSource => {
   if (
     value === "photo_exif" ||
     value === "device_time" ||
@@ -1284,9 +1284,9 @@ function normalizeCapturedAtSource(value: unknown): CapturedAtSource {
     message: "capturedAtSource 값이 올바르지 않습니다.",
     status: 400,
   });
-}
+};
 
-function normalizeLocationSource(value: unknown): LocationSource {
+const normalizeLocationSource = (value: unknown): LocationSource => {
   if (
     value === "photo_exif" ||
     value === "current_gps" ||
@@ -1302,9 +1302,9 @@ function normalizeLocationSource(value: unknown): LocationSource {
     message: "locationSource 값이 올바르지 않습니다.",
     status: 400,
   });
-}
+};
 
-function normalizeOptionalCapturedAt(value: unknown) {
+const normalizeOptionalCapturedAt = (value: unknown) => {
   if (value === undefined || value === null) {
     return null;
   }
@@ -1332,27 +1332,27 @@ function normalizeOptionalCapturedAt(value: unknown) {
   }
 
   return trimmed;
-}
+};
 
-function normalizeOptionalLatitude(value: unknown) {
+const normalizeOptionalLatitude = (value: unknown) => {
   return normalizeOptionalCoordinate({
     fieldName: "latitude",
     max: 90,
     min: -90,
     value,
   });
-}
+};
 
-function normalizeOptionalLongitude(value: unknown) {
+const normalizeOptionalLongitude = (value: unknown) => {
   return normalizeOptionalCoordinate({
     fieldName: "longitude",
     max: 180,
     min: -180,
     value,
   });
-}
+};
 
-function normalizeOptionalCoordinate({
+const normalizeOptionalCoordinate = ({
   fieldName,
   max,
   min,
@@ -1362,7 +1362,7 @@ function normalizeOptionalCoordinate({
   max: number;
   min: number;
   value: unknown;
-}) {
+}) => {
   if (value === undefined || value === null) {
     return null;
   }
@@ -1384,9 +1384,9 @@ function normalizeOptionalCoordinate({
   }
 
   return value;
-}
+};
 
-function normalizeNullableString(value: unknown) {
+const normalizeNullableString = (value: unknown) => {
   if (typeof value !== "string") {
     return null;
   }
@@ -1394,9 +1394,9 @@ function normalizeNullableString(value: unknown) {
   const trimmed = value.trim();
 
   return trimmed.length > 0 ? trimmed : null;
-}
+};
 
-function normalizeErrorForLog(error: unknown) {
+const normalizeErrorForLog = (error: unknown) => {
   if (error instanceof PublicHttpError) {
     return {
       code: error.code,
@@ -1414,9 +1414,9 @@ function normalizeErrorForLog(error: unknown) {
   }
 
   return error;
-}
+};
 
-function jsonResponse(body: unknown, status = 200) {
+const jsonResponse = (body: unknown, status = 200) => {
   return new Response(JSON.stringify(body), {
     headers: {
       ...corsHeaders,
@@ -1424,4 +1424,4 @@ function jsonResponse(body: unknown, status = 200) {
     },
     status,
   });
-}
+};

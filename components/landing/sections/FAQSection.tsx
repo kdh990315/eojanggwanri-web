@@ -5,7 +5,7 @@ import { MainTitle } from "@/components/landing/MainTitle";
 import { SectionLabel } from "@/components/landing/SectionLabel";
 import { faqItems } from "@/constants/FAQItems";
 
-export function FAQSection() {
+export const FAQSection = () => {
   return (
     <section className="bg-white px-5 py-24 md:py-32">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.95fr_1.05fr]">
@@ -30,4 +30,4 @@ export function FAQSection() {
       </div>
     </section>
   );
-}
+};

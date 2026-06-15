@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export function HeroSection() {
+export const HeroSection = () => {
   return (
     <section className="relative h-screen h-dvh overflow-hidden text-[#191f28]">
       <div className="absolute inset-0">
@@ -57,4 +57,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+};

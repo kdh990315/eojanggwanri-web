@@ -7,10 +7,10 @@ type SectionLabelProps = {
   className?: string;
 };
 
-export function SectionLabel({
+export const SectionLabel = ({
   children,
   className,
-}: SectionLabelProps) {
+}: SectionLabelProps) => {
   return (
     <p
       className={cn(
@@ -21,4 +21,4 @@ export function SectionLabel({
       {children}
     </p>
   );
-}
+};

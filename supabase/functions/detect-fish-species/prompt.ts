@@ -4,11 +4,11 @@ import type {
   WaterType,
 } from "./types.ts";
 
-export function buildPrompt(
+export const buildPrompt = (
   speciesList: FishSpeciesRow[],
   references: AiSpeciesReferenceRow[],
   waterType: WaterType | null,
-) {
+) => {
   const dictionary = speciesList
     .map(
       (item) =>
@@ -42,4 +42,4 @@ export function buildPrompt(
   ]
     .filter(Boolean)
     .join("\n\n");
-}
+};

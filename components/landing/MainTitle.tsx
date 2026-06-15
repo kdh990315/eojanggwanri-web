@@ -7,7 +7,7 @@ type MainTitleProps = {
   className?: string;
 };
 
-export function MainTitle({ children, className }: MainTitleProps) {
+export const MainTitle = ({ children, className }: MainTitleProps) => {
   return (
     <h2
       className={cn(
@@ -18,4 +18,4 @@ export function MainTitle({ children, className }: MainTitleProps) {
       {children}
     </h2>
   );
-}
+};

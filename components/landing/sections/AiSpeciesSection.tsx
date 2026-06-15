@@ -6,7 +6,7 @@ import { ProductScreen } from "@/components/landing/ProductScreen";
 import { SectionLabel } from "@/components/landing/SectionLabel";
 import { SubTitle } from "@/components/landing/SubTitle";
 
-export function AiSpeciesSection() {
+export const AiSpeciesSection = () => {
   return (
     <section
       id="ai-species"
@@ -44,4 +44,4 @@ export function AiSpeciesSection() {
       </div>
     </section>
   );
-}
+};

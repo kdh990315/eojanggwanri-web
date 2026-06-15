@@ -28,6 +28,6 @@ export interface GeminiResponse {
   candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
 }
 
-export function normalizeWaterType(value: unknown): WaterType | null {
+export const normalizeWaterType = (value: unknown): WaterType | null => {
   return value === "saltwater" || value === "freshwater" ? value : null;
-}
+};

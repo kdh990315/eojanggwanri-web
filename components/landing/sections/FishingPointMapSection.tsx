@@ -3,7 +3,7 @@ import { ProductScreen } from "@/components/landing/ProductScreen";
 import { SectionLabel } from "@/components/landing/SectionLabel";
 import { SubTitle } from "@/components/landing/SubTitle";
 
-export function FishingPointMapSection() {
+export const FishingPointMapSection = () => {
   return (
     <section id="point-map" className="bg-white px-5 py-20 md:py-24 lg:py-32">
       <div className="mx-auto grid max-w-6xl gap-10 md:gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
@@ -30,4 +30,4 @@ export function FishingPointMapSection() {
       </div>
     </section>
   );
-}
+};

@@ -3,7 +3,7 @@ import { ProductScreen } from "@/components/landing/ProductScreen";
 import { SectionLabel } from "@/components/landing/SectionLabel";
 import { SubTitle } from "@/components/landing/SubTitle";
 
-export function CatchRegistrationSection() {
+export const CatchRegistrationSection = () => {
   return (
     <section
       id="record"
@@ -30,4 +30,4 @@ export function CatchRegistrationSection() {
       </div>
     </section>
   );
-}
+};

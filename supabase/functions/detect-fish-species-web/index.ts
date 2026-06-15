@@ -74,18 +74,18 @@ Deno.serve(async (request) => {
   }
 });
 
-function createAdminClient() {
+const createAdminClient = () => {
   return createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     { auth: { persistSession: false } },
   );
-}
+};
 
-async function consumePublicQuota(
+const consumePublicQuota = async (
   supabase: ReturnType<typeof createClient>,
   request: Request,
-) {
+) => {
   const clientHash = await createClientHash(request);
   const { data, error } = await supabase.rpc("consume_web_ai_species_quota", {
     request_client_hash: clientHash,
@@ -96,9 +96,9 @@ async function consumePublicQuota(
   }
 
   return data === true;
-}
+};
 
-async function createClientHash(request: Request) {
+const createClientHash = async (request: Request) => {
   const salt = Deno.env.get("AI_SPECIES_RATE_LIMIT_SALT");
 
   if (!salt) {
@@ -117,19 +117,19 @@ async function createClientHash(request: Request) {
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
-}
+};
 
-function normalizeErrorForLog(error: unknown) {
+const normalizeErrorForLog = (error: unknown) => {
   if (error instanceof Error) {
     return { message: error.message, name: error.name, stack: error.stack };
   }
 
   return error;
-}
+};
 
-function jsonResponse(body: unknown, status = 200) {
+const jsonResponse = (body: unknown, status = 200) => {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status,
   });
-}
+};

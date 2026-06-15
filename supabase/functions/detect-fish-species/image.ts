@@ -3,10 +3,10 @@ import type { InlineImage } from "./types.ts";
 const MAX_INLINE_IMAGE_BYTES = 8 * 1024 * 1024;
 const SUPPORTED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
-export function normalizeInlineImage(
+export const normalizeInlineImage = (
   base64Value: unknown,
   mimeValue: unknown,
-): InlineImage | null {
+): InlineImage | null => {
   if (typeof base64Value !== "string" || typeof mimeValue !== "string") {
     return null;
   }
@@ -23,4 +23,4 @@ export function normalizeInlineImage(
   }
 
   return { base64, mimeType: mimeValue };
-}
+};

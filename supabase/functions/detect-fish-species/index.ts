@@ -87,7 +87,7 @@ Deno.serve(async (request) => {
   }
 });
 
-function createUserClient(authorization: string) {
+const createUserClient = (authorization: string) => {
   return createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -96,12 +96,12 @@ function createUserClient(authorization: string) {
       global: { headers: { Authorization: authorization } },
     },
   );
-}
+};
 
-async function downloadImage(
+const downloadImage = async (
   supabase: ReturnType<typeof createClient>,
   imagePath: string,
-) {
+) => {
   const { data, error } = await supabase.storage
     .from(CATCH_IMAGES_BUCKET)
     .download(imagePath);
@@ -114,9 +114,9 @@ async function downloadImage(
   const bytes = new Uint8Array(await data.arrayBuffer());
 
   return { base64: bytesToBase64(bytes), mimeType };
-}
+};
 
-function bytesToBase64(bytes: Uint8Array) {
+const bytesToBase64 = (bytes: Uint8Array) => {
   const chunkSize = 32_768;
   let binary = "";
 
@@ -125,23 +125,23 @@ function bytesToBase64(bytes: Uint8Array) {
   }
 
   return btoa(binary);
-}
+};
 
-function normalizeText(value: unknown) {
+const normalizeText = (value: unknown) => {
   return typeof value === "string" && value.trim() ? value.trim() : null;
-}
+};
 
-function normalizeErrorForLog(error: unknown) {
+const normalizeErrorForLog = (error: unknown) => {
   if (error instanceof Error) {
     return { message: error.message, name: error.name, stack: error.stack };
   }
 
   return error;
-}
+};
 
-function jsonResponse(body: unknown, status = 200) {
+const jsonResponse = (body: unknown, status = 200) => {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status,
   });
-}
+};

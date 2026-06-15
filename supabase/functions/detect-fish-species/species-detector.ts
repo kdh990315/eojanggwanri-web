@@ -7,7 +7,7 @@ import type { InlineImage, WaterType } from "./types.ts";
 
 export { GEMINI_MODEL };
 
-export async function detectSpecies({
+export const detectSpecies = async ({
   image,
   supabase,
   waterType,
@@ -15,7 +15,7 @@ export async function detectSpecies({
   image: InlineImage;
   supabase: SupabaseClient;
   waterType: WaterType | null;
-}) {
+}) => {
   const [speciesList, references] = await getSpeciesData(supabase, waterType);
   const response = await callGemini(
     image,
@@ -23,4 +23,4 @@ export async function detectSpecies({
   );
 
   return parseCandidates(response, speciesList, references);
-}
+};

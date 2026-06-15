@@ -15,7 +15,7 @@ const seoStructuredData = {
   url: "https://eojanggwanri-web.vercel.app/",
 };
 
-export default function Home() {
+const Home = () => {
   return (
     <>
       <main className="min-h-screen bg-white text-[#191f28]">
@@ -34,4 +34,6 @@ export default function Home() {
       />
     </>
   );
-}
+};
+
+export default Home;

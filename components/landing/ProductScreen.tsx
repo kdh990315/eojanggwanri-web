@@ -6,11 +6,11 @@ type ProductScreenProps = {
   className?: string;
 };
 
-export function ProductScreen({
+export const ProductScreen = ({
   src,
   alt,
   className = "",
-}: ProductScreenProps) {
+}: ProductScreenProps) => {
   return (
     <div
       className={`mx-auto w-[min(100%,330px)] rounded-[2.25rem] border-4 border-slate-200 bg-white lg:border-[5px] ${className}`}
@@ -25,4 +25,4 @@ export function ProductScreen({
       />
     </div>
   );
-}
+};

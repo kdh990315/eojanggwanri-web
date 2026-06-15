@@ -7,7 +7,7 @@ type SubTitleProps = {
   className?: string;
 };
 
-export function SubTitle({ children, className }: SubTitleProps) {
+export const SubTitle = ({ children, className }: SubTitleProps) => {
   return (
     <p
       className={cn(
@@ -18,4 +18,4 @@ export function SubTitle({ children, className }: SubTitleProps) {
       {children}
     </p>
   );
-}
+};

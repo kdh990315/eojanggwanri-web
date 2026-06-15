@@ -8,7 +8,7 @@ import type {
 
 export const GEMINI_MODEL = "gemini-2.5-flash";
 
-export async function callGemini(image: InlineImage, prompt: string) {
+export const callGemini = async (image: InlineImage, prompt: string) => {
   const apiKey = Deno.env.get("GEMINI_API_KEY");
 
   if (!apiKey) {
@@ -70,13 +70,13 @@ export async function callGemini(image: InlineImage, prompt: string) {
   }
 
   return (await response.json()) as GeminiResponse;
-}
+};
 
-export function parseCandidates(
+export const parseCandidates = (
   response: GeminiResponse,
   speciesList: FishSpeciesRow[],
   references: AiSpeciesReferenceRow[],
-) {
+) => {
   const text = response.candidates?.[0]?.content?.parts
     ?.map((part) => part.text ?? "")
     .join("")
@@ -122,12 +122,12 @@ export function parseCandidates(
       },
     ];
   });
-}
+};
 
-function clampConfidence(value: unknown) {
+const clampConfidence = (value: unknown) => {
   const confidence = typeof value === "number" ? value : Number(value);
 
   return Number.isFinite(confidence)
     ? Math.max(0, Math.min(100, Math.round(confidence)))
     : 0;
-}
+};

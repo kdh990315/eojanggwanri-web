@@ -2,7 +2,7 @@ import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
 
-function getRequiredEnv(name: "SUPABASE_PUBLISHABLE_KEY" | "SUPABASE_URL") {
+const getRequiredEnv = (name: "SUPABASE_PUBLISHABLE_KEY" | "SUPABASE_URL") => {
   const value = process.env[name];
 
   if (!value) {
@@ -10,9 +10,9 @@ function getRequiredEnv(name: "SUPABASE_PUBLISHABLE_KEY" | "SUPABASE_URL") {
   }
 
   return value;
-}
+};
 
-export function createSupabaseServerClient() {
+export const createSupabaseServerClient = () => {
   return createClient(
     getRequiredEnv("SUPABASE_URL"),
     getRequiredEnv("SUPABASE_PUBLISHABLE_KEY"),
@@ -24,4 +24,4 @@ export function createSupabaseServerClient() {
       },
     },
   );
-}
+};
