@@ -56,7 +56,10 @@ Avoid:
 ## Photo Handling
 
 - Web AI identification is available without login.
+- Simple AI identification is available without login in both app and web experiences.
 - For non-logged-in users, identification photos must not be stored or retained.
+- AI identification and photo catch draft creation must process images without storing photos or prediction records.
+- Upload a catch photo to Storage only after the logged-in user confirms final catch registration.
 - If temporary processing is technically required, ensure the implementation removes the photo and does not expose it as stored user content.
 - If a logged-in user connects an image to a catch record, verify ownership with Supabase Auth, RLS policy, and Storage object path rules.
 - Separate AI identification output from the species finally selected by the user.
