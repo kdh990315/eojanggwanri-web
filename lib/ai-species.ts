@@ -14,19 +14,44 @@ export interface AiSpeciesCandidate {
   speciesName: string;
 }
 
+export type AiSpeciesRegulationKind =
+  | "closed_season"
+  | "minimum_length"
+  | "minimum_weight"
+  | "prohibited_length_range";
+
+export interface AiSpeciesRegulation {
+  effectiveFrom: string;
+  exceptionNote: string | null;
+  measurementBasis: string | null;
+  minLengthCm: number | null;
+  minWeightG: number | null;
+  periodEndDay: number | null;
+  periodEndMonth: number | null;
+  periodStartDay: number | null;
+  periodStartMonth: number | null;
+  prohibitedLengthMaxCm: number | null;
+  prohibitedLengthMinCm: number | null;
+  regionNote: string | null;
+  regulationKind: AiSpeciesRegulationKind;
+  sourceTitle: string;
+  sourceUrl: string;
+}
+
 export interface AiSpeciesDetectionResponse {
   candidates: AiSpeciesCandidate[];
   model: string;
+  regulations: AiSpeciesRegulation[];
 }
 
-export function isSupportedAiSpeciesImageType(
+export const isSupportedAiSpeciesImageType = (
   value: string,
-): value is (typeof AI_SPECIES_SUPPORTED_IMAGE_TYPES)[number] {
+): value is (typeof AI_SPECIES_SUPPORTED_IMAGE_TYPES)[number] => {
   return AI_SPECIES_SUPPORTED_IMAGE_TYPES.some((type) => type === value);
-}
+};
 
-export function isAiSpeciesWaterType(
+export const isAiSpeciesWaterType = (
   value: unknown,
-): value is AiSpeciesWaterType {
+): value is AiSpeciesWaterType => {
   return value === "freshwater" || value === "saltwater";
-}
+};

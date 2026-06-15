@@ -2,39 +2,29 @@
 
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 
+import { SpeciesRegulations } from "@/components/ai-species/SpeciesRegulations";
 import {
   AI_SPECIES_MAX_IMAGE_BYTES,
   isSupportedAiSpeciesImageType,
+  type AiSpeciesCandidate,
+  type AiSpeciesDetectionResponse,
+  type AiSpeciesRegulation,
 } from "@/lib/ai-species";
 
 const ACCEPTED_IMAGE_TYPES = "image/jpeg,image/png,image/webp";
 
-const previewCandidates = [
-  {
-    speciesName: "도다리",
-    confidence: 87,
-    reason: "납작한 체형과 지느러미 형태, 몸통의 무늬가 유사합니다.",
-  },
-  {
-    speciesName: "광어",
-    confidence: 64,
-    reason: "납작한 체형과 한쪽으로 모인 눈이 비슷해 함께 확인이 필요합니다.",
-  },
-  {
-    speciesName: "가자미",
-    confidence: 51,
-    reason: "체형은 유사하지만 몸통 무늬와 눈의 위치에서 차이가 있습니다.",
-  },
-];
-
-export function SpeciesUploadCard() {
+export const SpeciesUploadCard = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const analysisIdRef = useRef(0);
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [candidates, setCandidates] = useState<AiSpeciesCandidate[]>([]);
+  const [regulations, setRegulations] = useState<AiSpeciesRegulation[]>([]);
 
   useEffect(() => {
     if (!image) {
@@ -48,11 +38,11 @@ export function SpeciesUploadCard() {
     return () => URL.revokeObjectURL(nextPreviewUrl);
   }, [image]);
 
-  function openFilePicker() {
+  const openFilePicker = () => {
     inputRef.current?.click();
-  }
+  };
 
-  function selectImage(file: File | undefined) {
+  const selectImage = (file: File | undefined) => {
     setError("");
 
     if (!file) {
@@ -70,25 +60,85 @@ export function SpeciesUploadCard() {
     }
 
     setImage(file);
+    analysisIdRef.current += 1;
+    setCandidates([]);
+    setIsAnalyzing(false);
+    setRegulations([]);
     setShowResult(false);
-  }
+  };
 
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     selectImage(event.target.files?.[0]);
     event.target.value = "";
-  }
+  };
 
-  function handleDrop(event: DragEvent<HTMLDivElement>) {
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
     selectImage(event.dataTransfer.files?.[0]);
-  }
+  };
 
-  function clearImage() {
+  const clearImage = () => {
+    analysisIdRef.current += 1;
     setImage(null);
+    setCandidates([]);
     setError("");
+    setIsAnalyzing(false);
+    setRegulations([]);
     setShowResult(false);
-  }
+  };
+
+  const analyzeImage = async () => {
+    if (!image || isAnalyzing) {
+      return;
+    }
+
+    setError("");
+    setIsAnalyzing(true);
+    const analysisId = analysisIdRef.current + 1;
+    analysisIdRef.current = analysisId;
+
+    try {
+      const formData = new FormData();
+      formData.set("image", image);
+
+      const response = await fetch("/api/ai-species", {
+        body: formData,
+        method: "POST",
+      });
+      const data = (await response.json()) as
+        | AiSpeciesDetectionResponse
+        | { message?: string };
+
+      if (!response.ok || !("candidates" in data)) {
+        throw new Error(
+          "message" in data && data.message
+            ? data.message
+            : "AI 어종 판별을 시작하지 못했습니다.",
+        );
+      }
+
+      if (analysisId === analysisIdRef.current) {
+        setCandidates(data.candidates);
+        setRegulations(data.regulations);
+        setShowResult(true);
+      }
+    } catch (requestError) {
+      if (analysisId === analysisIdRef.current) {
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : "AI 어종 판별 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+        );
+      }
+    } finally {
+      if (analysisId === analysisIdRef.current) {
+        setIsAnalyzing(false);
+      }
+    }
+  };
+
+  const primaryCandidate = candidates[0];
 
   return (
     <section
@@ -129,7 +179,7 @@ export function SpeciesUploadCard() {
         aria-label="물고기 사진 촬영"
       />
 
-      {image && previewUrl && showResult ? (
+      {image && previewUrl && showResult && primaryCandidate ? (
         <div className="mt-6">
           <div className="grid gap-4 sm:grid-cols-[160px_minmax(0,1fr)] sm:items-center">
             <img
@@ -142,7 +192,7 @@ export function SpeciesUploadCard() {
                 판별 결과
               </p>
               <h2 className="mt-1 text-2xl font-black text-slate-950">
-                가장 유사한 후보는 도다리예요
+                가장 유사한 후보는 {primaryCandidate.speciesName}예요
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-500">
                 AI가 사진의 형태와 무늬를 비교해 제안한 참고용 후보입니다.
@@ -158,100 +208,61 @@ export function SpeciesUploadCard() {
                   가장 유사한 후보
                 </p>
                 <h3 className="mt-1 text-2xl font-black text-slate-950">
-                  {previewCandidates[0].speciesName}
+                  {primaryCandidate.speciesName}
                 </h3>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold text-slate-500">참고 일치도</p>
                 <p className="mt-1 text-xl font-black text-main-color-100">
-                  {previewCandidates[0].confidence}%
+                  {primaryCandidate.confidence}%
                 </p>
               </div>
             </div>
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-white">
               <div
                 className="h-full rounded-full bg-main-color-300"
-                style={{ width: `${previewCandidates[0].confidence}%` }}
+                style={{ width: `${primaryCandidate.confidence}%` }}
               />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-600">
-              {previewCandidates[0].reason}
+              {primaryCandidate.reason}
             </p>
           </div>
 
-          <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-black text-amber-700">
-                  포획 규정 확인
-                </p>
-                <h3 className="mt-1 text-lg font-black text-slate-950">
-                  도다리는 금어기와 금지체장이 있어요
-                </h3>
-              </div>
-              <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">
-                2026년 기준
-              </span>
-            </div>
+          {regulations.length ? (
+            <SpeciesRegulations
+              regulations={regulations}
+              speciesName={primaryCandidate.speciesName}
+            />
+          ) : null}
 
-            <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl bg-white p-4">
-                <dt className="text-xs font-bold text-slate-500">금지체장</dt>
-                <dd className="mt-1 text-lg font-black text-slate-950">
-                  전장 20cm 이하
-                </dd>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  전장은 물고기의 머리 끝부터 꼬리 끝까지의 길이입니다.
-                </p>
-              </div>
-              <div className="rounded-xl bg-white p-4">
-                <dt className="text-xs font-bold text-slate-500">금어기</dt>
-                <dd className="mt-1 text-lg font-black text-slate-950">
-                  12월 1일~1월 31일
-                </dd>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  다음 해 1월 31일까지 적용되는 기간입니다.
-                </p>
-              </div>
-            </dl>
-
-            <p className="mt-4 text-xs leading-5 text-amber-900/70">
-              지역과 어업 방식에 따라 규정이 다를 수 있습니다. 방류 전 최신
-              공식 기준과 예외 사항을 다시 확인해 주세요.
-            </p>
-            <p className="mt-2 text-xs font-bold text-amber-900/60">
-              출처: 해양수산부 수산자원의 금어기·금지체장 기준(2026.1.1.)
-            </p>
-            <p className="mt-1 text-xs leading-5 text-amber-900/60">
-              공식 기준 원문 어종명: 문치가자미
-            </p>
-          </section>
-
-          <div className="mt-6">
-            <h3 className="text-base font-black text-slate-950">
-              함께 확인할 후보
-            </h3>
-            <div className="mt-3 grid gap-3">
-              {previewCandidates.slice(1).map((candidate) => (
-                <article
-                  key={candidate.speciesName}
-                  className="rounded-2xl border border-slate-200 p-4"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <h4 className="font-black text-slate-950">
-                      {candidate.speciesName}
-                    </h4>
-                    <p className="text-sm font-black text-slate-500">
-                      참고 {candidate.confidence}%
+          {candidates.length > 1 ? (
+            <div className="mt-6">
+              <h3 className="text-base font-black text-slate-950">
+                함께 확인할 후보
+              </h3>
+              <div className="mt-3 grid gap-3">
+                {candidates.slice(1).map((candidate) => (
+                  <article
+                    key={candidate.speciesName}
+                    className="rounded-2xl border border-slate-200 p-4"
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <h4 className="font-black text-slate-950">
+                        {candidate.speciesName}
+                      </h4>
+                      <p className="text-sm font-black text-slate-500">
+                        참고 {candidate.confidence}%
+                      </p>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-slate-500">
+                      {candidate.reason}
                     </p>
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    {candidate.reason}
-                  </p>
-                </article>
-              ))}
+                  </article>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <button
             type="button"
@@ -291,17 +302,18 @@ export function SpeciesUploadCard() {
               사진이 준비되었습니다
             </p>
             <p className="mt-1.5 text-sm leading-6 text-slate-600">
-              사진을 올리면 짧은 광고 후 AI 어종 판별이 시작됩니다. 판별
-              기능은 광고 연동과 함께 제공될 예정입니다.
+              판별을 시작하면 사진을 저장하지 않고 AI가 등록된 어종 데이터를
+              기준으로 후보를 제안합니다.
             </p>
           </div>
 
           <button
             type="button"
-            onClick={() => setShowResult(true)}
-            className="mt-4 inline-flex h-14 w-full items-center justify-center rounded-md bg-main-color-100 px-6 text-base font-black text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={analyzeImage}
+            disabled={isAnalyzing}
+            className="mt-4 inline-flex h-14 w-full items-center justify-center rounded-md bg-main-color-100 px-6 text-base font-black text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60"
           >
-            판별 결과 화면 보기
+            {isAnalyzing ? "AI가 어종 후보를 분석하고 있습니다" : "AI 어종 판별 시작"}
           </button>
           <button
             type="button"
@@ -366,4 +378,4 @@ export function SpeciesUploadCard() {
 
     </section>
   );
-}
+};
